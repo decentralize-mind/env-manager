@@ -5,6 +5,10 @@ Cargo.lock
 
 .qoder/
 
+# Documentation (keep only README.md)
+*.md
+!README.md
+
 # Environment files with secrets
 .env
 .env.*
