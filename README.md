@@ -23,50 +23,6 @@ env-manager is a **production-ready secrets management system** built in Rust th
 
 Perfect for Web3 applications, financial systems, and any project requiring **enterprise-grade secret management**.
 
-## 🏗️ Architecture
-
-```
-env-manager/
-├── src/
-│   ├── main.rs                          # Entry point with advanced config loading
-│   ├── config/
-│   │   ├── mod.rs                       # Config module exports
-│   │   ├── schema.rs                    # Typed configuration schema
-│   │   ├── loader.rs                    # Multi-layer config loader
-│   │   ├── validator.rs                 # Fail-fast validation
-│   │   └── advanced.rs                  ✨ Feature flags, safety controls, metrics
-│   ├── secrets/
-│   │   ├── mod.rs                       # Secrets module exports
-│   │   ├── memory.rs                    # Memory-safe secret storage (zeroize)
-│   │   ├── vault.rs                     # HashiCorp Vault client
-│   │   ├── rotator.rs                   # Automatic key rotation
-│   │   ├── dynamic_creds.rs             ✨ Dynamic database credentials
-│   │   ├── encrypted_cache.rs           ✨ AES-GCM encrypted cache
-│   │   ├── hsm.rs                       ✨ HSM-backed signing
-│   │   ├── threshold_signer.rs          ✨ Threshold signature schemes
-│   │   └── web3_signer.rs               ✨ 3-tier Web3 signer service
-│   ├── security/
-│   │   ├── mod.rs                       # Security module exports
-│   │   ├── audit.rs                     # Audit logging
-│   │   ├── access.rs                    # Role-based access control
-│   │   ├── mtls.rs                      ✨ Mutual TLS support
-│   │   ├── leak_detector.rs             ✨ Secret leak detection
-│   │   ├── transaction_validator.rs     ✨ Transaction validation engine
-│   │   ├── policy_engine.rs             ✨ Policy enforcement
-│   │   └── emergency_shutdown.rs        ✨ Emergency shutdown system
-│   └── utils/
-│       ├── mod.rs                       # Utils module exports
-│       ├── secure_env.rs                ✨ Password-protected .env management
-│       ├── telegram_notifier.rs         ✨ Telegram deployment notifications
-│       └── metrics.rs                   ✨ Prometheus metrics collector
-├── .github/workflows/
-│   ├── ci.yml                           # CI pipeline (tests, linting, security)
-│   └── deploy.yml                       # CD pipeline (K8s deployment + notifications)
-├── kubernetes/                          # K8s manifests and Helm charts
-├── docker/                              # Docker configurations
-└── docs/                                # Comprehensive documentation
-```
-
 ## ✨ Features
 
 ### 🔐 Core Security
