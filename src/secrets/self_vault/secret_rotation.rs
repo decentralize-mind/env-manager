@@ -27,7 +27,7 @@ pub struct RotationStatus {
     pub status: RotationState,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum RotationState {
     Active,
     Pending,

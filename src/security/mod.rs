@@ -5,3 +5,5 @@ pub mod mtls;
 pub mod transaction_validator;
 pub mod policy_engine;
 pub mod emergency_shutdown;
+pub mod web3_policy_engine;
+pub mod bridge_security;

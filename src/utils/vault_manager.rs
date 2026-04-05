@@ -218,6 +218,9 @@ pub async fn display_vault_stats(vault: &Arc<SelfVault>, user: &str) {
     println!("\n📊 SelfVault Statistics");
     println!("═══════════════════════");
     
+    // Ensure user has admin role for viewing stats
+    let _ = vault.access_control().assign_role(user, "admin").await;
+    
     let secret_count = vault.secret_count().await;
     println!("Total secrets: {}", secret_count);
     
@@ -225,9 +228,11 @@ pub async fn display_vault_stats(vault: &Arc<SelfVault>, user: &str) {
     println!("Audit log entries: {}", audit_count);
     
     if let Ok(paths) = vault.list_secrets(user).await {
-        println!("\nSecret paths:");
-        for path in paths {
-            println!("  • {}", path);
+        if !paths.is_empty() {
+            println!("\nSecret paths:");
+            for path in paths {
+                println!("  • {}", path);
+            }
         }
     }
     

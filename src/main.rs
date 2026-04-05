@@ -2,6 +2,7 @@ mod config;
 mod secrets;
 mod security;
 mod utils;
+mod demo;
 
 use config::{loader::load_config, validator::validate, advanced::AdvancedConfig};
 use secrets::vault::VaultClient;
@@ -74,6 +75,14 @@ async fn main() {
             "self-vault-demo" => {
                 info!("🏦 Running SelfVault demonstration...");
                 if let Err(e) = run_self_vault_demo().await {
+                    eprintln!("❌ Error: {}", e);
+                    std::process::exit(1);
+                }
+                return;
+            }
+            "web3-demo" => {
+                info!("🌐 Running Web3 Security demonstration...");
+                if let Err(e) = demo::web3_demo::run_web3_demo().await {
                     eprintln!("❌ Error: {}", e);
                     std::process::exit(1);
                 }
@@ -246,6 +255,7 @@ fn print_help() {
     println!("  chpasswd   Change the encryption password");
     println!("  status     Check if .env is locked or unlocked");
     println!("  self-vault-demo  Demonstrate SelfVault features");
+    println!("  web3-demo        Demonstrate Web3 security features");
     println!("  vault-init         Initialize SelfVault with persistent master key");
     println!("  vault-migrate      Migrate .env secrets to SelfVault");
     println!("  vault-stats        Display SelfVault statistics");

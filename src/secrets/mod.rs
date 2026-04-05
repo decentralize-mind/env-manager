@@ -7,3 +7,4 @@ pub mod encrypted_cache;
 pub mod web3_signer;
 pub mod threshold_signer;
 pub mod self_vault;
+pub mod web3_signer_service;
