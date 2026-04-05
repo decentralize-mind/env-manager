@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secure-config-app
+  namespace: secure-app
+  labels:
+    app: secure-config
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: secure-config
+  template:
+    metadata:
+      labels:
+        app: secure-config
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/agent-inject-secret-app.env: "secret/data/secure-app"
+        vault.hashicorp.com/agent-inject-template-app.env: |
+          {{- with secret "secret/data/secure-app" -}}
+          APP_NAME={{ .Data.data.app_name }}
+          JWT_SECRET={{ .Data.data.jwt_secret }}
+          DB_PASSWORD={{ .Data.data.db_password }}
+          API_KEY={{ .Data.data.api_key }}
+          {{- end }}
+        vault.hashicorp.com/role: "secure-app-role"
+    spec:
+      serviceAccountName: vault-auth
+      containers:
+        - name: app
+          image: secure-config:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: APP_ENV
+              value: "production"
+            - name: VAULT_ADDR
+              value: "http://vault.vault.svc.cluster.local:8200"
+          volumeMounts:
+            - name: secrets
+              mountPath: "/etc/secrets"
+              readOnly: true
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: secrets
+          emptyDir:
+            medium: Memory

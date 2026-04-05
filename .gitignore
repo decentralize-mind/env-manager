@@ -1,0 +1,38 @@
+# Rust
+/target/
+**/*.rs.bk
+Cargo.lock
+
+.qoder
+.md
+
+# Environment files with secrets
+.env
+.env.*
+!.env.example
+*.encrypted
+
+# Kubernetes configs with secrets
+k8s/*secrets*.yaml
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+*.pdb
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Logs
+*.log
+logs/
