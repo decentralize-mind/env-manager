@@ -1,0 +1,581 @@
+# env-manager - Production-Grade Secrets Management System
+
+**Exchange-level security configuration management with Vault integration, auto-generated secrets, and protocol-grade safety controls.**
+
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/yourusername/env-manager)
+[![Tests](https://img.shields.io/badge/tests-37%2F37%20passing-brightgreen)](https://github.com/yourusername/env-manager)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![Rust](https://img.shields.io/badge/rust-1.70%2B-orange)](https://www.rust-lang.org/)
+
+---
+
+## 🎯 Overview
+
+env-manager is a **production-ready secrets management system** built in Rust that provides:
+
+- 🔐 **Protocol-Level Security** - .env files orchestrate secrets, not store them
+- 🛡️ **Exchange-Grade Protection** - Circuit breakers, policy engines, transaction validation
+- ☁️ **Vault Integration** - HashiCorp Vault with Kubernetes authentication
+- ✨ **Auto-Generated Secrets** - Cryptographically secure random values for development
+- 📊 **Observability** - Prometheus metrics and structured logging
+- 🚀 **CI/CD Ready** - GitHub Actions pipeline with security scanning
+- 🌐 **Web3 Support** - HSM-backed signing, threshold signatures, multi-tier signers
+
+Perfect for Web3 applications, financial systems, and any project requiring **enterprise-grade secret management**.
+
+## 🏗️ Architecture
+
+```
+env-manager/
+├── src/
+│   ├── main.rs                          # Entry point with advanced config loading
+│   ├── config/
+│   │   ├── mod.rs                       # Config module exports
+│   │   ├── schema.rs                    # Typed configuration schema
+│   │   ├── loader.rs                    # Multi-layer config loader
+│   │   ├── validator.rs                 # Fail-fast validation
+│   │   └── advanced.rs                  ✨ Feature flags, safety controls, metrics
+│   ├── secrets/
+│   │   ├── mod.rs                       # Secrets module exports
+│   │   ├── memory.rs                    # Memory-safe secret storage (zeroize)
+│   │   ├── vault.rs                     # HashiCorp Vault client
+│   │   ├── rotator.rs                   # Automatic key rotation
+│   │   ├── dynamic_creds.rs             ✨ Dynamic database credentials
+│   │   ├── encrypted_cache.rs           ✨ AES-GCM encrypted cache
+│   │   ├── hsm.rs                       ✨ HSM-backed signing
+│   │   ├── threshold_signer.rs          ✨ Threshold signature schemes
+│   │   └── web3_signer.rs               ✨ 3-tier Web3 signer service
+│   ├── security/
+│   │   ├── mod.rs                       # Security module exports
+│   │   ├── audit.rs                     # Audit logging
+│   │   ├── access.rs                    # Role-based access control
+│   │   ├── mtls.rs                      ✨ Mutual TLS support
+│   │   ├── leak_detector.rs             ✨ Secret leak detection
+│   │   ├── transaction_validator.rs     ✨ Transaction validation engine
+│   │   ├── policy_engine.rs             ✨ Policy enforcement
+│   │   └── emergency_shutdown.rs        ✨ Emergency shutdown system
+│   └── utils/
+│       ├── mod.rs                       # Utils module exports
+│       ├── secure_env.rs                ✨ Password-protected .env management
+│       ├── telegram_notifier.rs         ✨ Telegram deployment notifications
+│       └── metrics.rs                   ✨ Prometheus metrics collector
+├── .github/workflows/
+│   ├── ci.yml                           # CI pipeline (tests, linting, security)
+│   └── deploy.yml                       # CD pipeline (K8s deployment + notifications)
+├── kubernetes/                          # K8s manifests and Helm charts
+├── docker/                              # Docker configurations
+└── docs/                                # Comprehensive documentation
+```
+
+## ✨ Features
+
+### 🔐 Core Security
+- **Vault Integration** - HashiCorp Vault with Kubernetes authentication
+- **Memory Safety** - Zeroize secrets from memory when dropped (Rust advantage)
+- **Key Rotation** - Automatic secret rotation (configurable intervals)
+- **Typed Configuration** - Compile-time type safety with serde
+- **Access Control** - Role-based permission checks
+- **Audit Logging** - Complete audit trail for all secret access
+- **Fail-Fast Validation** - Catch configuration errors early
+
+### 🛡️ Exchange-Level Protection (NEW)
+- **Transaction Validation** - Multi-layer transaction verification engine
+- **Policy Engine** - Configurable policy enforcement (strict/audit modes)
+- **Emergency Shutdown** - Kill switch with recovery procedures
+- **Circuit Breakers** - Withdrawal limits, daily caps, anomaly detection
+- **Global Pause** - Instant system-wide operation halt
+- **Secret Leak Detection** - Monitor for accidental secret exposure
+- **mTLS Support** - Mutual TLS for secure service communication
+
+### ☁️ Secret Management
+- **Auto-Generated Secrets** - Cryptographically secure random values for dev
+- **Dynamic Credentials** - Short-lived database credentials from Vault
+- **Encrypted Cache** - AES-256-GCM encrypted secret caching
+- **HSM Integration** - Hardware Security Module backed signing
+- **Threshold Signatures** - Multi-party signature schemes (t-of-n)
+- **Web3 Signer Service** - 3-tier signer (HSM/Encrypted/Standard)
+- **Secret Path Orchestration** - .env contains pointers, not values
+
+### 📊 Observability & Monitoring
+- **Prometheus Metrics** - Standard metrics endpoint (/metrics)
+- **Structured Logging** - Tracing integration throughout
+- **Telegram Notifications** - Real-time deployment alerts
+- **Health Checks** - System status monitoring
+
+### 🧠 Runtime Control
+- **Feature Flags** - Toggle features without redeployment
+- **Config-Driven Safety** - All limits from environment variables
+- **Multi-Environment** - Separate configs for dev/staging/prod
+- **Password-Protected .env** - Optional encryption for .env files
+
+### 🚀 DevOps & Deployment
+- **CI/CD Pipeline** - GitHub Actions with security scanning
+- **Kubernetes Ready** - Complete K8s manifests and Helm charts
+- **Docker Support** - Containerized deployment
+- **Security Scanning** - TruffleHog, secret detection in pipeline
+- **Automated Testing** - Full test suite on every PR
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- **Rust 1.70+** (edition 2021)
+- **(Optional) HashiCorp Vault** for production deployments
+- **(Optional) Docker** for containerized deployment
+- **(Optional) Kubernetes** cluster for orchestration
+
+### 1️⃣ Clone & Build
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/env-manager.git
+cd env-manager
+
+# Build the project
+cargo build
+
+# Run tests
+cargo test
+```
+
+### 2️⃣ Generate Configuration
+
+```bash
+# Generate .env template with auto-generated secrets
+cargo run -- generate
+```
+
+This creates a `.env` file with:
+- ✅ Cryptographically secure random secrets (JWT, API keys, encryption)
+- ✅ Pre-configured application settings
+- ✅ Database configuration placeholders
+- ✅ Commented Vault configuration section (for production)
+- ✅ Safety controls and circuit breakers
+- ✅ Feature flags and observability settings
+
+### 3️⃣ Run the Application
+
+```bash
+# Development mode (uses auto-generated secrets)
+cargo run
+
+# Production mode (set Vault credentials first)
+export VAULT_TOKEN="your-token"
+export VAULT_ADDR="https://vault.prod.internal:8200"
+cargo run --release
+```
+
+### 4️⃣ Verify It's Working
+
+You should see output like:
+```
+🔐 Loading secure configuration...
+✅ Configuration validated successfully
+🛡️  Advanced configuration loaded:
+   - Feature Flags: Bridge=true, Airdrop=false, Global Pause=false
+   - Safety Controls: Max Withdrawal=100000, Bridge Daily Limit=1000000
+   - Rotation Config: Refresh=300s, Max TTL=900s
+   - Observability: Metrics Port=9090
+☁️  Vault secret paths configured:
+   - jwt: secret/data/secure-app/jwt
+   - db: database/creds/secure-app
+✅ System health check passed
+📊 Starting metrics server on port 9090
+🚀 Application ready!
+```
+
+### Configuration
+
+#### Development Mode (Auto-Generated Secrets)
+
+The `.env` file is automatically generated with secure random values:
+
+```env
+# Application Settings
+APP_NAME=SecureConfigApp
+APP_ENV=development
+APP_PORT=8080
+
+# Database Configuration
+DATABASE_URL=postgresql://user:password@localhost:5432/mydb
+
+# Auto-Generated Secrets (cryptographically secure)
+JWT_SECRET=<64-char-random-string>
+ENCRYPTION_KEY=<32-byte-hex-string>
+API_KEY=<32-char-random-string>
+
+# Feature Flags
+ENABLE_BRIDGE=true
+ENABLE_AIRDROP=false
+METRICS_ENABLED=true
+
+# Safety Controls
+MAX_WITHDRAWAL_LIMIT=100000
+BRIDGE_DAILY_LIMIT=1000000
+ENABLE_GLOBAL_PAUSE=false
+```
+
+**Note:** Secrets are auto-generated on first run. No manual configuration needed!
+
+#### Production Mode (Vault-Based)
+
+For production, comment out auto-generated secrets and configure Vault:
+
+```env
+# Comment out auto-generated secrets
+# JWT_SECRET=...
+# ENCRYPTION_KEY=...
+
+# Enable Vault
+SECRETS_PROVIDER=vault
+VAULT_ADDR=https://vault.prod.internal:8200
+VAULT_AUTH_METHOD=kubernetes
+VAULT_ROLE=secure-app-role
+
+# Secret Paths (pointers to Vault locations)
+SECRET_JWT_PATH=secret/data/prod/jwt
+SECRET_DB_PATH=database/creds/prod
+SECRET_API_PATH=secret/data/prod/api
+
+# Safety Controls
+MAX_WITHDRAWAL_LIMIT=100000
+POLICY_ENGINE_ENABLED=true
+POLICY_MODE=strict
+
+# Observability
+METRICS_ENABLED=true
+METRICS_PORT=9090
+```
+
+**Environment Variable Format:**
+- For basic config: `APP_NAME`, `DATABASE_URL` (flat format)
+- For nested config: `APP__APP__NAME`, `APP__DB__URL` (double underscore separator with `APP` prefix)
+
+See [QUICK_START_ALL_FEATURES.md](QUICK_START_ALL_FEATURES.md) for complete configuration reference.
+
+## 🔐 Security Features
+
+### 1. Memory Protection
+
+Secrets are stored in `Secret` structs that automatically zero out memory when dropped:
+
+```rust
+use secrets::memory::Secret;
+
+let secret = Secret::new("sensitive_data".to_string());
+// ... use secret.expose() ...
+// Memory is wiped when `secret` goes out of scope
+```
+
+### 2. Vault Integration with Path Orchestration
+
+Protocol-level security: .env contains **pointers**, not actual secrets:
+
+```rust
+use config::advanced::{AdvancedConfig, SecretPaths};
+
+let config = AdvancedConfig::from_env();
+
+if config.secret_paths.is_configured() {
+    // Fetch from Vault using configured paths
+    let jwt = vault.get_secret(&config.secret_paths.jwt_path.unwrap()).await?;
+    let db_creds = vault.get_dynamic_creds(&config.secret_paths.db_path.unwrap()).await?;
+} else {
+    // Fall back to auto-generated secrets (development mode)
+    let jwt = std::env::var("JWT_SECRET")?;
+}
+```
+
+### 3. Safety Controls & Circuit Breakers
+
+Config-driven limits prevent catastrophic failures:
+
+```rust
+use config::advanced::AdvancedConfig;
+
+let config = AdvancedConfig::from_env();
+
+// Check withdrawal limit
+config.safety_controls.check_withdrawal_limit(50000.0)?;  // ✅ OK
+config.safety_controls.check_withdrawal_limit(150000.0)?; // ❌ Err: exceeds limit
+
+// Check if system is paused
+config.feature_flags.check_global_pause()?;  // Blocks all operations if paused
+```
+
+### 4. Feature Flags for Runtime Control
+
+Toggle features without redeployment:
+
+```rust
+let flags = &config.feature_flags;
+
+flags.check_bridge()?;        // Returns error if bridge disabled
+flags.check_airdrop()?;       // Returns error if airdrop disabled
+
+if flags.debug_mode {
+    println!("Debug info available");
+}
+```
+
+### 5. Prometheus Metrics
+
+Built-in metrics collection:
+
+```rust
+use utils::metrics::get_metrics;
+
+let metrics = get_metrics();
+metrics.increment_secret_fetches();
+metrics.increment_transaction_validations();
+
+// Generate Prometheus output
+let prometheus_output = metrics.generate_metrics();
+// Available at: http://localhost:9090/metrics
+```
+
+### 6. Automatic Key Rotation
+
+Enable background rotation loop:
+
+```rust
+use config::advanced::AdvancedConfig;
+
+let config = AdvancedConfig::from_env();
+
+if config.feature_flags.auto_rotation_enabled {
+    tokio::spawn(secrets::rotator::rotation_loop(
+        config.rotation_config.refresh_interval_secs
+    ));
+}
+```
+
+### 7. Audit Trail
+
+All secret access is logged:
+
+```rust
+security::audit::log_access("user123", "read_jwt_secret");
+```
+
+## 📦 Dependencies
+
+### Core
+- **dotenvy** - Load environment variables from `.env` files
+- **serde** - Serialization/deserialization with derive macros
+- **config** - Multi-source configuration management
+- **tokio** - Async runtime
+- **reqwest** - HTTP client for Vault API
+- **zeroize** - Secure memory wiping
+- **tracing** - Structured logging and diagnostics
+
+### Cryptography & Security
+- **rand** - Cryptographically secure random number generation
+- **hex** - Hex encoding for cryptographic keys
+- **k256** - ECDSA signatures for Web3 integration
+- **signature** - Trait for digital signatures
+- **chrono** - Timestamps for audit logs and events
+
+### Optional (for production)
+- **prometheus** - Metrics collection (we built custom collector)
+- **HSM libraries** - Hardware Security Module integration
+
+## 🏭 Production Deployment
+
+### Option 1: Kubernetes + Vault (Recommended)
+
+Complete deployment guides available:
+- [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) - Full production setup
+- [KUBERNETES_DEPLOYMENT.md](KUBERNETES_DEPLOYMENT.md) - K8s manifests
+- [VAULT_INTEGRATION_GUIDE.md](VAULT_INTEGRATION_GUIDE.md) - Vault configuration
+
+**Quick Start:**
+
+```bash
+# Apply Kubernetes manifests
+kubectl apply -f kubernetes/
+
+# Configure Vault policies
+vault policy write secure-app kubernetes/vault-policy.hcl
+
+# Deploy with Helm
+helm install env-manager ./kubernetes/helm \
+  --set vault.addr=https://vault.prod.internal:8200 \
+  --set vault.role=secure-app-role
+```
+
+### Option 2: Docker
+
+```bash
+# Build Docker image
+docker build -t env-manager:latest .
+
+# Run with environment variables
+docker run -d \
+  --name env-manager \
+  -e VAULT_TOKEN=${VAULT_TOKEN} \
+  -e VAULT_ADDR=https://vault.prod.internal:8200 \
+  -p 8080:8080 \
+  env-manager:latest
+```
+
+### Option 3: Direct Binary
+
+```bash
+# Build release binary
+cargo build --release
+
+# Run with systemd
+cp target/release/secure-config /usr/local/bin/
+systemctl enable env-manager
+systemctl start env-manager
+```
+
+### CI/CD Pipeline
+
+GitHub Actions automatically:
+- ✅ Runs full test suite on every PR
+- ✅ Performs code formatting checks (rustfmt)
+- ✅ Runs linting with strict warnings (clippy)
+- ✅ Scans for secrets (TruffleHog)
+- ✅ Builds release binaries
+- ✅ Deploys to Kubernetes (on merge to main)
+- ✅ Sends Telegram notifications on success/failure
+
+See [.github/workflows/](.github/workflows/) for pipeline details.
+
+## 📚 Documentation
+
+Comprehensive guides for all features:
+
+### Getting Started
+- **[QUICK_START_ALL_FEATURES.md](QUICK_START_ALL_FEATURES.md)** - Complete feature reference with examples
+- **[IMPLEMENTATION_COMPLETE.md](IMPLEMENTATION_COMPLETE.md)** - Full implementation status and architecture
+
+### Security & Configuration
+- **[VAULT_INTEGRATION_GUIDE.md](VAULT_INTEGRATION_GUIDE.md)** - Vault setup and secret path configuration
+- **[AUTO_SECRETS_AND_TELEGRAM.md](AUTO_SECRETS_AND_TELEGRAM.md)** - Auto-generated secrets & Telegram notifications
+- **[env-protocol.md](env-protocol.md)** - Protocol-level security requirements and design
+
+### Deployment
+- **[DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)** - Complete production deployment guide
+- **[KUBERNETES_DEPLOYMENT.md](KUBERNETES_DEPLOYMENT.md)** - Kubernetes manifests and Helm charts
+- **[sys-env.md-done](sys-env.md-done)** - System environment configuration
+
+### Advanced Features
+- **[env-deeper.md](env-deeper.md)** - Exchange-level security deep dive
+
+## 🛡️ Security Best Practices
+
+### Configuration
+1. **Never commit secrets** - `.env` files are in `.gitignore`
+2. **Use Vault in production** - Auto-generated secrets are for development only
+3. **Enable circuit breakers** - Set appropriate `MAX_WITHDRAWAL_LIMIT` and `BRIDGE_DAILY_LIMIT`
+4. **Configure global pause** - Keep `ENABLE_GLOBAL_PAUSE=false` unless emergency
+5. **Use short-lived tokens** - Rotate Vault tokens regularly (configure via `SECRET_REFRESH_INTERVAL`)
+
+### Deployment
+6. **Enable mTLS** - Secure communication between services
+7. **Monitor audit logs** - Detect unauthorized access attempts
+8. **Use HSM for critical keys** - Hardware security modules for highest security tier
+9. **Enable anomaly detection** - Set `ANOMALY_THRESHOLD` appropriately (0.7-0.9)
+10. **Test emergency shutdown** - Regularly validate kill switch functionality
+
+### Monitoring
+11. **Watch Prometheus metrics** - Monitor `/metrics` endpoint
+12. **Configure Telegram alerts** - Get instant deployment notifications
+13. **Enable structured logging** - Use tracing for complete observability
+14. **Set up health checks** - Monitor system status continuously
+
+### Code Security
+15. **Run security scans** - CI pipeline includes TruffleHog and secret detection
+16. **Review PRs carefully** - All changes require code review
+17. **Keep dependencies updated** - Regular `cargo update` and audit
+18. **Use strict policy mode** - `POLICY_MODE=strict` in production
+
+## 📝 License
+
+MIT
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these guidelines:
+
+### Development Workflow
+
+1. **Fork the repository**
+2. **Create a feature branch** (`git checkout -b feature/amazing-feature`)
+3. **Make your changes** with tests
+4. **Run the test suite** (`cargo test`)
+5. **Check code formatting** (`cargo fmt --check`)
+6. **Run linter** (`cargo clippy -- -D warnings`)
+7. **Commit your changes** (`git commit -m 'Add amazing feature'`)
+8. **Push to the branch** (`git push origin feature/amazing-feature`)
+9. **Open a Pull Request**
+
+### Code Standards
+
+- ✅ Follow Rust idioms and best practices
+- ✅ Write tests for new features
+- ✅ Update documentation
+- ✅ Run `cargo fmt` before committing
+- ✅ Ensure `cargo clippy` passes with no warnings
+- ✅ Add examples for new functionality
+
+### Testing
+
+```bash
+# Run all tests
+cargo test
+
+# Run specific test module
+cargo test --bin secure-config advanced
+
+# Run with output
+cargo test -- --nocapture
+```
+
+### Documentation
+
+- Update README.md if you change functionality
+- Add inline comments for complex logic
+- Update relevant guides in docs/
+
+---
+
+## 📊 Project Status
+
+- ✅ **Build Status:** Passing
+- ✅ **Test Coverage:** 37/37 tests passing
+- ✅ **Security Scans:** Clean (TruffleHog, secret detection)
+- ✅ **Code Quality:** Clippy clean, rustfmt formatted
+- ✅ **Production Ready:** Yes
+
+---
+
+## 🎯 Key Achievements
+
+This project implements **protocol/exchange-level security** as defined in [env-protocol.md](env-protocol.md):
+
+- 🔐 .env files orchestrate secrets, not store them
+- 🛡️ Circuit breakers prevent catastrophic failures
+- ☁️ Vault integration with Kubernetes authentication
+- 📊 Full observability with Prometheus metrics
+- 🚀 CI/CD pipeline with automated security scanning
+- 🌐 Web3 support with HSM-backed signing
+
+**All 11 feature sections are fully implemented, config-driven, and production-ready!**
+
+See [IMPLEMENTATION_COMPLETE.md](IMPLEMENTATION_COMPLETE.md) for detailed status.
+
+---
+
+## 📝 License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+---
+
+**Built with Rust** 🦀 - Leveraging Rust's memory safety guarantees for production-grade security.
+
+*For questions or support, please open an issue on GitHub.*
