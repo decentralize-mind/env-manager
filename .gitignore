@@ -3,8 +3,7 @@
 **/*.rs.bk
 Cargo.lock
 
-.qoder
-.md
+.qoder/
 
 # Environment files with secrets
 .env
