@@ -138,20 +138,71 @@ cargo build
 cargo test
 ```
 
-### 2️⃣ Generate Configuration
+### 2️⃣ CLI Commands
+
+env-manager provides powerful command-line tools for managing secrets:
 
 ```bash
-# Generate .env template with auto-generated secrets
+# Generate .env template with auto-generated secure secrets
 cargo run -- generate
+
+# Lock (encrypt) .env file with password protection
+cargo run -- lock
+
+# Unlock (decrypt) .env file
+cargo run -- unlock
+
+# Change encryption password
+cargo run -- chpasswd
+
+# Check lock status
+cargo run -- status
+
+# Show help
+cargo run -- help
 ```
 
-This creates a `.env` file with:
-- ✅ Cryptographically secure random secrets (JWT, API keys, encryption)
-- ✅ Pre-configured application settings
-- ✅ Database configuration placeholders
-- ✅ Commented Vault configuration section (for production)
-- ✅ Safety controls and circuit breakers
-- ✅ Feature flags and observability settings
+#### Command Details
+
+| Command | Description | Use Case |
+|---------|-------------|----------|
+| `generate` | Create .env template with crypto-secure random secrets | Initial setup |
+| `lock` | Encrypt .env with AES-256-GCM + password | Protect secrets at rest |
+| `unlock` | Decrypt .env file (prompts for password) | Access secrets for editing |
+| `chpasswd` | Change encryption password | Password rotation |
+| `status` | Check if .env is locked/unlocked | Verify security state |
+| *(none)* | Load config and start application | Normal operation |
+
+#### Example Workflow
+
+```bash
+# 1. Generate initial configuration
+cargo run -- generate
+# ✅ .env created with auto-generated JWT_SECRET, API_KEY, etc.
+
+# 2. Check status
+cargo run -- status
+# 🔓 .env file is UNLOCKED (plaintext)
+
+# 3. Lock it for security
+cargo run -- lock
+# Enter password: ********
+# 🔒 .env file locked successfully
+
+# 4. Verify it's locked
+cargo run -- status
+# 🔒 .env file is LOCKED (encrypted)
+
+# 5. Unlock when you need to edit
+cargo run -- unlock
+# Enter password: ********
+# 🔓 .env file unlocked
+
+# 6. Run the application
+cargo run
+# 🔐 Loading secure configuration...
+# 🚀 Application ready!
+```
 
 ### 3️⃣ Run the Application
 
