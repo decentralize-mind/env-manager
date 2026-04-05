@@ -14,8 +14,9 @@
 env-manager is a **production-ready secrets management system** built in Rust that provides:
 
 - 🔐 **Protocol-Level Security** - .env files orchestrate secrets, not store them
+- 🏦 **SelfVault** - Built-in enterprise-grade secrets management (zero dependencies!)
 - 🛡️ **Exchange-Grade Protection** - Circuit breakers, policy engines, transaction validation
-- ☁️ **Vault Integration** - HashiCorp Vault with Kubernetes authentication
+- ☁️ **Vault Integration** - HashiCorp Vault with Kubernetes authentication (optional)
 - ✨ **Auto-Generated Secrets** - Cryptographically secure random values for development
 - 📊 **Observability** - Prometheus metrics and structured logging
 - 🚀 **CI/CD Ready** - GitHub Actions pipeline with security scanning
@@ -26,7 +27,8 @@ Perfect for Web3 applications, financial systems, and any project requiring **en
 ## ✨ Features
 
 ### 🔐 Core Security
-- **Vault Integration** - HashiCorp Vault with Kubernetes authentication
+- **SelfVault** - Built-in secrets management with zero external dependencies
+- **Vault Integration** - HashiCorp Vault with Kubernetes authentication (optional)
 - **Memory Safety** - Zeroize secrets from memory when dropped (Rust advantage)
 - **Key Rotation** - Automatic secret rotation (configurable intervals)
 - **Typed Configuration** - Compile-time type safety with serde
@@ -44,6 +46,13 @@ Perfect for Web3 applications, financial systems, and any project requiring **en
 - **mTLS Support** - Mutual TLS for secure service communication
 
 ### ☁️ Secret Management
+- **SelfVault** - Complete embedded secrets management system (NEW!)
+  - AES-256-GCM encryption with seal/unseal mechanism
+  - Dynamic credentials with automatic expiry and renewal
+  - Comprehensive audit trail for compliance
+  - Automatic secret rotation without downtime
+  - Fine-grained RBAC access control
+  - Production-grade security controls
 - **Auto-Generated Secrets** - Cryptographically secure random values for dev
 - **Dynamic Credentials** - Short-lived database credentials from Vault
 - **Encrypted Cache** - AES-256-GCM encrypted secret caching
@@ -98,6 +107,8 @@ cargo test
 
 env-manager provides powerful command-line tools for managing secrets:
 
+#### Basic Secret Management
+
 ```bash
 # Generate .env template with auto-generated secure secrets
 cargo run -- generate
@@ -129,6 +140,128 @@ cargo run -- help
 | `status` | Check if .env is locked/unlocked | Verify security state |
 | *(none)* | Load config and start application | Normal operation |
 
+#### 🏦 SelfVault - Built-in Secrets Management
+
+**SelfVault** is a complete, self-contained secrets management system built into env-manager. It provides enterprise-grade security features without requiring external dependencies like HashiCorp Vault.
+
+```bash
+# Run the SelfVault demonstration
+cargo run -- self-vault-demo
+```
+
+This interactive demo showcases all SelfVault features:
+- ✅ Centralized secure storage with AES-256-GCM encryption
+- ✅ Dynamic credentials with automatic expiry
+- ✅ Comprehensive audit trail with tamper-proof logging
+- ✅ Automatic secret rotation without downtime
+- ✅ Fine-grained access control policies (RBAC)
+- ✅ Production-grade security controls
+- ✅ Vault seal/unseal mechanism
+
+##### SelfVault Features Explained
+
+**1. Secure Storage**
+- All secrets encrypted with AES-256-GCM
+- Encryption keys zeroized from memory on drop
+- Seal/unseal mechanism to temporarily lock access
+
+**2. Dynamic Credentials**
+- Generate temporary database/API credentials
+- Configurable TTL (time-to-live)
+- Automatic renewal before expiry
+- Cryptographically secure random generation
+
+**3. Audit Trail**
+- Complete log of all operations
+- Filter by user, event type, or export as JSON
+- Compliance-ready for SOC2, PCI-DSS, etc.
+
+**4. Secret Rotation**
+- Schedule automatic rotation intervals
+- Zero-downtime rotation
+- Manual rotation on-demand
+- Track rotation history
+
+**5. Access Control (RBAC)**
+- Role-based permissions (admin, developer, viewer)
+- Path-based policies with wildcards
+- Permission levels: Read, Write, Delete, List, Admin
+
+**6. Security Controls**
+- Failed attempt lockout
+- Session management with timeouts
+- IP whitelisting
+- Emergency lockdown capability
+
+##### Using SelfVault in Your Code
+
+```rust
+use secrets::self_vault::{SelfVault, DynamicCredentialsManager, SecretRotator};
+use std::sync::Arc;
+
+// Initialize SelfVault
+let master_key = SelfVault::generate_master_key();
+let vault = Arc::new(SelfVault::new(&master_key));
+
+// Store a secret
+vault.put_secret("secret/api-key", "my-secret-value", Some(3600), "admin")
+    .await?;
+
+// Retrieve a secret
+if let Some(value) = vault.get_secret("secret/api-key", "admin").await? {
+    println!("Secret: {}", value);
+}
+
+// Generate dynamic credentials
+let creds_manager = DynamicCredentialsManager::new(
+    vault.clone(),
+    3600, // 1 hour TTL
+    300,  // Renew 5 minutes before expiry
+);
+let cred = creds_manager.generate_credential(
+    "db/creds/app",
+    "database",
+    "admin"
+).await?;
+
+println!("Username: {}", cred.username);
+println!("Password: {}", cred.password);
+println!("Expires in: {:?}", cred.time_until_expiry());
+
+// Rotate secrets
+let rotator = SecretRotator::new(vault.clone());
+rotator.register_rotation("secret/api-key", 3600, "admin").await?;
+rotator.rotate_secret("secret/api-key", "new-secret-value", "admin").await?;
+```
+
+##### When to Use SelfVault vs HashiCorp Vault
+
+| Feature | SelfVault | HashiCorp Vault |
+|---------|-----------|----------------|
+| **Deployment** | Built-in, no external deps | Separate service required |
+| **Setup Complexity** | Zero configuration | Complex setup & maintenance |
+| **Encryption** | AES-256-GCM | AES-256-GCM + more |
+| **Dynamic Creds** | ✅ Yes | ✅ Yes |
+| **Audit Trail** | ✅ Comprehensive | ✅ Comprehensive |
+| **Auto Rotation** | ✅ Yes | ✅ Yes |
+| **Access Control** | ✅ RBAC | ✅ RBAC + more |
+| **High Availability** | ❌ Single instance | ✅ Cluster support |
+| **Best For** | Single apps, embedded use | Enterprise, multi-service |
+
+**Use SelfVault when:**
+- You want zero external dependencies
+- Running a single application/service
+- Need quick setup without infrastructure
+- Building embedded systems or edge applications
+
+**Use HashiCorp Vault when:**
+- You need high availability across multiple nodes
+- Managing secrets for many microservices
+- Require advanced storage backends
+- Already have Vault infrastructure
+
+For complete SelfVault documentation, see [SELVAULT_GUIDE.md](SELVAULT_GUIDE.md).
+
 #### Example Workflow
 
 ```bash
@@ -158,6 +291,27 @@ cargo run -- unlock
 cargo run
 # 🔐 Loading secure configuration...
 # 🚀 Application ready!
+```
+
+#### Quick Reference - All Commands
+
+```bash
+# 🔧 Basic Secret Management
+cargo run -- generate        # Create .env template with secure secrets
+cargo run -- lock            # Encrypt .env with password
+cargo run -- unlock          # Decrypt .env file
+cargo run -- chpasswd        # Change encryption password
+cargo run -- status          # Check lock status
+
+# 🏦 SelfVault Demo
+cargo run -- self-vault-demo # Interactive demo of all SelfVault features
+
+# 🚀 Run Application
+cargo run                    # Start application (default)
+cargo run --release          # Production build
+
+# ℹ️  Help
+cargo run -- help            # Show all commands
 ```
 
 ### 3️⃣ Run the Application

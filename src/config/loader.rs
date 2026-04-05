@@ -7,8 +7,8 @@ pub fn load_config() -> Result<AppConfig, config::ConfigError> {
     let builder = Config::builder()
         .add_source(File::with_name("config").required(false))
         .add_source(
-            Environment::with_prefix("APP")
-                .separator("__")
+            Environment::default()
+                .separator("_")
                 .try_parsing(true)
         );
 

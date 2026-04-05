@@ -1,0 +1,10 @@
+[app]
+name = "SecureConfigApp"
+port = 8080
+
+[db]
+url = "postgresql://user:password@localhost:5432/mydb"
+
+[security]
+jwt_secret = "En24WXUrI9GNoOBydos6mC*b2WqTZEszQW1hxY@8JJL1olZ9sHFAirC$uq@TQL8p"
+encryption_key = "1edc54b8f0a4b8e2213625a0cc0dc976cedfc1709dbab5d15bf04b8e67fa848b"
