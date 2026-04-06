@@ -36,7 +36,15 @@ Perfect for Web3 applications, financial systems, and any project requiring **en
 - **Audit Logging** - Complete audit trail for all secret access
 - **Fail-Fast Validation** - Catch configuration errors early
 
-### 🛡️ Exchange-Level Protection (NEW)
+### 🌐 Web3 Security (NEW)
+- **Secure Signing** - Transaction/message signing without exposing private keys
+- **Policy Engine** - Amount limits, address controls, anomaly detection
+- **Bridge Protection** - Challenge periods, multi-sig, rate limiting
+- **Emergency Controls** - Pause signing, freeze bridges instantly
+- **Risk Scoring** - Real-time transaction risk assessment (0.0-1.0)
+- **HSM/MPC Ready** - Architecture supports hardware security modules
+
+### 🛡️ Exchange-Level Protection
 - **Transaction Validation** - Multi-layer transaction verification engine
 - **Policy Engine** - Configurable policy enforcement (strict/audit modes)
 - **Emergency Shutdown** - Kill switch with recovery procedures
@@ -81,6 +89,76 @@ Perfect for Web3 applications, financial systems, and any project requiring **en
 - **Automated Testing** - Full test suite on every PR
 
 ## 🚀 Quick Start
+
+### Installation
+
+#### Option 1: Homebrew (Recommended) 🍺
+
+**Fast installation with pre-built binaries:**
+
+```bash
+# Add our tap (first time only)
+brew tap decentralize-mind/env-manager
+
+# Install (instant - uses pre-built binary)
+brew install env-manager
+
+# Verify installation
+env-manager --help
+```
+
+**Updates are easy:**
+```bash
+brew update
+brew upgrade env-manager
+```
+
+#### Option 2: Build from Source
+
+```bash
+# Clone repository
+git clone https://github.com/decentralize-mind/env-manager.git
+cd env-manager
+
+# Build and install
+cargo install --path .
+
+# Verify
+env-manager --help
+```
+
+#### Option 3: Pre-built Binaries
+
+Download from [GitHub Releases](https://github.com/decentralize-mind/env-manager/releases):
+
+```bash
+# Download for your platform
+curl -L https://github.com/decentralize-mind/env-manager/releases/download/v0.1.0/env-manager-v0.1.0-aarch64-apple-darwin.tar.gz | tar xz
+
+# Move to PATH
+mv env-manager /usr/local/bin/
+
+# Verify
+env-manager --help
+```
+
+### Basic Usage
+
+```bash
+# Initialize SelfVault (first time)
+env-manager vault-init
+
+# Generate a .env template
+env-manager generate
+
+# Lock your .env file with password protection
+env-manager lock
+
+# Check status
+env-manager status
+```
+
+---
 
 ### Prerequisites
 
@@ -262,6 +340,73 @@ rotator.rotate_secret("secret/api-key", "new-secret-value", "admin").await?;
 
 For complete SelfVault documentation, see [SELVAULT_GUIDE.md](SELVAULT_GUIDE.md).
 
+#### 🌐 Web3 Security Features
+
+env-manager includes **production-ready Web3 security capabilities** for blockchain applications:
+
+```bash
+# Run the Web3 security demonstration
+cargo run -- web3-demo
+```
+
+##### Web3 Features
+
+**1. Secure Transaction Signing**
+- Private keys NEVER leave protected memory
+- EIP-1559 transaction signing
+- EIP-191 message signing (personal_sign)
+- Policy-based validation before signing
+- Emergency pause mechanism
+
+**2. Transaction Policy Engine**
+- Amount limits (per-tx, daily, weekly)
+- Address allowlisting/blocklisting
+- Rate limiting and anomaly detection
+- Multi-sig requirements for large amounts
+- Risk scoring (0.0 - 1.0)
+
+**3. Bridge Security**
+- Challenge periods (30 minutes default)
+- Multi-signature validation (t-of-n)
+- Daily/weekly transfer limits
+- Operation challenge system
+- Emergency controls
+
+##### Using Web3 Features in Code
+
+```rust
+use std::sync::Arc;
+use env_manager::secrets::self_vault::SelfVault;
+use env_manager::secrets::web3_signer_service::{Web3SignerService, Web3Transaction};
+use env_manager::security::web3_policy_engine::Web3PolicyEngine;
+
+// Initialize components
+let vault = Arc::new(SelfVault::new(&master_key));
+let signer = Web3SignerService::new(vault.clone(), policy_engine, config);
+let policy = Web3PolicyEngine::new(vault.clone());
+
+// Load signing key (stays encrypted!)
+signer.load_signing_key("treasury", "admin").await?;
+
+// Validate transaction
+let result = policy.validate_transaction(sender, recipient, amount, "admin").await?;
+
+// Sign if valid
+if result.is_valid {
+    let sig = signer.sign_transaction(&tx, "treasury", "admin").await?;
+    broadcast(sig.to_hex()).await?;
+}
+```
+
+**Security Guarantees:**
+- 🔒 Keys never exposed to application code
+- 🛡️ All transactions policy-validated
+- 🚨 Emergency pause on all operations
+- 📋 Comprehensive audit trails
+- ⏱️ Bridge challenge periods prevent instant drains
+
+For complete Web3 documentation, see [WEB3_UPGRADE_GUIDE.md](WEB3_UPGRADE_GUIDE.md).
+
 #### Example Workflow
 
 ```bash
@@ -303,8 +448,14 @@ cargo run -- unlock          # Decrypt .env file
 cargo run -- chpasswd        # Change encryption password
 cargo run -- status          # Check lock status
 
-# 🏦 SelfVault Demo
-cargo run -- self-vault-demo # Interactive demo of all SelfVault features
+# 🏦 SelfVault Management
+cargo run -- vault-init      # Initialize SelfVault with persistent master key
+cargo run -- vault-migrate   # Migrate .env secrets to SelfVault
+cargo run -- vault-stats     # Display SelfVault statistics
+
+# 🎭 Demos
+cargo run -- self-vault-demo # Interactive demo of SelfVault features
+cargo run -- web3-demo       # Demo Web3 security features (signing, policies, bridges)
 
 # 🚀 Run Application
 cargo run                    # Start application (default)

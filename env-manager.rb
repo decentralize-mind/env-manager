@@ -3,8 +3,7 @@ class EnvManager < Formula
   homepage "https://github.com/decentralize-mind/env-manager"
   
   # Option 1: Build from source (recommended for development)
-  url "https://github.com/decentralize-mind/env-manager.git"
-  tag "v0.1.0"
+  url "https://github.com/decentralize-mind/env-manager.git", tag: "v0.1.0"
   
   # Option 2: Use pre-built binary (uncomment for production releases)
   # url "https://github.com/decentralize-mind/env-manager/releases/download/v0.1.0/env-manager-0.1.0-aarch64-apple-darwin.tar.gz"

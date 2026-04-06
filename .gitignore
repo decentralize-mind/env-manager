@@ -8,12 +8,19 @@ Cargo.lock
 # Documentation (keep only README.md)
 *.md
 !README.md
+!AUTOMATED_RELEASE_GUIDE.md
+!ENV_DEMO_AND_MIGRATION_GUIDE.md
+!TEST_RESULTS_SUMMARY.md
+!SETUP_COMPLETE.md
 
 # Environment files with secrets
 .env
 .env.*
 !.env.example
 *.encrypted
+
+# Vault master key (NEVER commit this!)
+.vault_master.key
 
 # Kubernetes configs with secrets
 k8s/*secrets*.yaml
