@@ -100,11 +100,17 @@ Perfect for Web3 applications, financial systems, and any project requiring **en
 # Add our tap (first time only)
 brew tap decentralize-mind/env-manager
 
-# Install (instant - uses pre-built binary)
+# Install
 brew install env-manager
 
 # Verify installation
-env-manager --help
+# Note: Current version installs as 'secure-config'
+secure-config --help
+
+# Optional: Create alias for convenience
+echo "alias env-manager='secure-config'" >> ~/.zshrc
+source ~/.zshrc
+env-manager --help  # Now works!
 ```
 
 **Updates are easy:**
@@ -123,7 +129,7 @@ cd env-manager
 # Build and install
 cargo install --path .
 
-# Verify
+# Verify (binary will be named 'env-manager')
 env-manager --help
 ```
 
@@ -144,6 +150,8 @@ env-manager --help
 
 ### Basic Usage
 
+After installation, use these commands:
+
 ```bash
 # Initialize SelfVault (first time)
 env-manager vault-init
@@ -156,6 +164,12 @@ env-manager lock
 
 # Check status
 env-manager status
+
+# If you installed via Homebrew and haven't created the alias yet:
+secure-config vault-init
+secure-config generate
+secure-config lock
+secure-config status
 ```
 
 ---
@@ -183,27 +197,44 @@ cargo test
 
 ### 2️⃣ CLI Commands
 
-env-manager provides powerful command-line tools for managing secrets:
+env-manager provides powerful command-line tools for managing secrets.
+
+**Note on Usage:**
+- **Development:** Use `cargo run -- <command>` when working in the source directory
+- **Production:** Use `env-manager <command>` after installation
+- **Homebrew (current):** Uses `secure-config` until next release (or create alias)
 
 #### Basic Secret Management
 
+**When installed (production):**
 ```bash
 # Generate .env template with auto-generated secure secrets
-cargo run -- generate
+env-manager generate
 
 # Lock (encrypt) .env file with password protection
-cargo run -- lock
+env-manager lock
 
 # Unlock (decrypt) .env file
-cargo run -- unlock
+env-manager unlock
 
 # Change encryption password
-cargo run -- chpasswd
+env-manager chpasswd
 
 # Check lock status
-cargo run -- status
+env-manager status
 
 # Show help
+env-manager help
+```
+
+**When developing (from source):**
+```bash
+# Same commands, but prefix with 'cargo run --'
+cargo run -- generate
+cargo run -- lock
+cargo run -- unlock
+cargo run -- chpasswd
+cargo run -- status
 cargo run -- help
 ```
 
@@ -224,6 +255,9 @@ cargo run -- help
 
 ```bash
 # Run the SelfVault demonstration
+env-manager self-vault-demo
+
+# Or when developing from source:
 cargo run -- self-vault-demo
 ```
 
@@ -463,6 +497,27 @@ cargo run --release          # Production build
 
 # ℹ️  Help
 cargo run -- help            # Show all commands
+```
+
+**After installation (production use):**
+```bash
+# Same commands without 'cargo run --' prefix
+env-manager generate
+env-manager lock
+env-manager unlock
+env-manager chpasswd
+env-manager status
+env-manager vault-init
+env-manager vault-migrate
+env-manager vault-stats
+env-manager self-vault-demo
+env-manager web3-demo
+env-manager help
+
+# If installed via Homebrew (current version uses 'secure-config'):
+secure-config generate
+secure-config vault-init
+# etc.
 ```
 
 ### 3️⃣ Run the Application
